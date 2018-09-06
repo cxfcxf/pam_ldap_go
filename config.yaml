@@ -1,4 +1,8 @@
 LoginAttr: cn
+ObjectClass: top
 Remote: ldap.us.onelogin.com
 Port: 636
 SearchBase: ou=users,dc=yourcompany,dc=onelogin,dc=com
+DirectBindAuth: false
+BindDN: cn=user,ou=users,dc=yourcompany,dc=onelogin,dc=com
+BindPW: bindPasswd

@@ -1,18 +1,27 @@
 # pam_ldap_go
+please be note, this will work with any ldap server that uses ssl/tls
+the cert of ldap server will not be verified
 
-please be note, this will only work with onelogin's vldap or
 
-any ldap server that uses tls but not need to verify cert
+### configure
+DirectBindAuth: false/true
 
-this is very useful since it will bind authuser directly for auth
+true:
+    steps: bind -> success
+false:
+    steps: bind -> search -> bind -> success
 
-without requiring binduser/bindpass for search then bind authuser 
+toggling ture means it will bind authuser directly for auth
+without requiring binduser/bindpass for search then bind authuser
+
+toggleing false means regular binding auth process
+
+ObjectClass/BindDN/BindPW options are only used for filtering search (DirectBindAuth=false)
 
 ### params it can take
 ```
 auth        sufficient    pam_ldap_go.so  config=/etc/pam_ldap.yaml <-default location
 ```
-
 
 ### how to compile
 ```

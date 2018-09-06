@@ -3,6 +3,7 @@ package main
 import (
 	"os"
 	"fmt"
+	"errors"
 	"crypto/tls"
 	"io/ioutil"
 
@@ -14,10 +15,14 @@ import (
 var pl pamLdap
 
 type pamLdap struct {
-	LoginAttr	string	`yaml:"LoginAttr"`
-	Remote		string	`yaml:"Remote"`
-	Port		string	`yaml:"Port"`
-	SearchBase	string	`yaml:"SearchBase"`
+	LoginAttr		string	`yaml:"LoginAttr"`
+	ObjectClass		string	`yaml:"ObjectClass"`
+	Remote			string	`yaml:"Remote"`
+	Port			string	`yaml:"Port"`
+	SearchBase		string	`yaml:"SearchBase"`
+	DirectBindAuth	bool	`yaml:"DirectBindAuth"`
+	BindDN			string	`yaml:"BindDN,omitempty"`
+	BindPW			string	`yaml:"BindPW,omitempty"`
 }
 
 func parseConfig(file string, pl *pamLdap) error {
@@ -43,10 +48,51 @@ func LdapAuth(pl *pamLdap, authuser, authtoken string) error {
 
 	defer l.Close()
 
-	user := fmt.Sprintf("%s=%s,%s", pl.LoginAttr, authuser, pl.SearchBase)
+	if pl.DirectBindAuth {
+		// this shortcut the search and try to bind authuser directly
+		user := fmt.Sprintf("%s=%s,%s", pl.LoginAttr, authuser, pl.SearchBase)
 
-	// we use this user to bind for atuh
-	err = l.Bind(user, authtoken)
+		// bind auth user
+		err = l.Bind(user, authtoken)
+	} else {
+        // normal binding when DirectBindAuth is false
+        // bind search user -> search -> bind auth user
+		err = l.Bind(pl.BindDN, pl.BindPW)
+		if err != nil {
+			return err
+		}
+
+		filter := fmt.Sprintf("(&(objectClass=%s)(%s=%s))", pl.ObjectClass, pl.LoginAttr, authuser)
+
+		searchRequest := ldap.NewSearchRequest(
+			pl.SearchBase,
+			ldap.ScopeWholeSubtree,
+			ldap.NeverDerefAliases,
+			0,
+			0,
+			false,
+			filter,
+			[]string{"dn"},
+			nil,
+		)
+
+		sr, err := l.Search(searchRequest)
+		if err != nil {
+			return err
+		}
+
+		if len(sr.Entries) != 1 {
+			return errors.New("User does not exist or too many entries returned")
+		}
+
+		userdn := sr.Entries[0].DN
+
+		err = l.Bind(userdn, authtoken)
+		if err != nil {
+			return err
+		}
+	}
+
 	return err
 }
 
