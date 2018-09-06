@@ -1,5 +1,6 @@
 # pam_ldap_go
 please be note, this will work with any ldap server that uses ssl/tls
+
 the cert of ldap server will not be verified
 
 
@@ -7,14 +8,18 @@ the cert of ldap server will not be verified
 DirectBindAuth: false/true
 
 true:
+
     steps: bind -> success
 false:
+
     steps: bind -> search -> bind -> success
 
 toggling ture means it will bind authuser directly for auth
+
 without requiring binduser/bindpass for search then bind authuser
 
 toggleing false means regular binding auth process
+
 
 ObjectClass/BindDN/BindPW options are only used for filtering search (DirectBindAuth=false)
 
