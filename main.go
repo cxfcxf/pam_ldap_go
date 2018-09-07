@@ -15,14 +15,14 @@ import (
 var pl pamLdap
 
 type pamLdap struct {
-    LoginAttr		string	`yaml:"LoginAttr"`
-    ObjectClass		string	`yaml:"ObjectClass"`
-    Remote			string	`yaml:"Remote"`
-    Port			string	`yaml:"Port"`
-    SearchBase		string	`yaml:"SearchBase"`
+    LoginAttr       string  `yaml:"LoginAttr"`
+    ObjectClass     string  `yaml:"ObjectClass"`
+    Remote          string  `yaml:"Remote"`
+    Port            string  `yaml:"Port"`
+    SearchBase      string  `yaml:"SearchBase"`
     DirectBindAuth  bool    `yaml:"DirectBindAuth"`
-    BindDN			string	`yaml:"BindDN,omitempty"`
-    BindPW			string	`yaml:"BindPW,omitempty"`
+    BindDN          string  `yaml:"BindDN,omitempty"`
+    BindPW          string  `yaml:"BindPW,omitempty"`
 }
 
 func parseConfig(file string, pl *pamLdap) error {
