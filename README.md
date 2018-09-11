@@ -2,7 +2,7 @@
 
 please be note, this will work with any ldap server that uses ssl/tls
 
-the cert of ldap server will not be verified
+the cert of remote ldap server will be verified with system root CA
 
 ## configure
 
