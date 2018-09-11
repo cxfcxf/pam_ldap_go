@@ -15,6 +15,7 @@ import (
 var pl pamLdap
 
 type pamLdap struct {
+	Insecure       bool   `yaml:"Insecure"`
 	LoginAttr      string `yaml:"LoginAttr"`
 	ObjectClass    string `yaml:"ObjectClass"`
 	Remote         string `yaml:"Remote"`
@@ -41,7 +42,12 @@ func parseConfig(file string, pl *pamLdap) error {
 func ldapAuth(pl *pamLdap, authuser, authtoken string) error {
 	remote := pl.Remote + ":" + pl.Port
 
-	l, err := ldap.DialTLS("tcp", remote, &tls.Config{InsecureSkipVerify: true})
+	tlsConfig := &tls.Config{
+		InsecureSkipVerify: pl.Insecure,
+		ServerName:         pl.Remote,
+	}
+
+	l, err := ldap.DialTLS("tcp", remote, tlsConfig)
 	if err != nil {
 		return err
 	}

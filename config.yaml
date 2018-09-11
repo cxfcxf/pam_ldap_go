@@ -1,3 +1,4 @@
+Insecure: false
 LoginAttr: cn
 ObjectClass: top
 Remote: ldap.us.onelogin.com
