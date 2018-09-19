@@ -136,12 +136,27 @@ func (pl *pamLdap) Authenticate(hdl pam.Handle, args pam.Args) pam.Value {
 	return pam.Success
 }
 
+func (pl *pamLdap) Validate(hdl pam.Handle, args pam.Args) pam.Value {
+	skipValidate := false
+
+	if _, ok := args["skipValidate"]; ok {
+		skipValidate = true
+	}
+
+	if skipValidate {
+		return pam.Success
+	}
+
+	return pam.PermissionDenied
+}
+
 func (pl *pamLdap) SetCredential(hdl pam.Handle, args pam.Args) pam.Value {
 	return pam.CredentialError
 }
 
 func init() {
 	pam.RegisterAuthHandler(&pl)
+	pam.RegisterAccountHandler(&pl)
 }
 
 func main() {

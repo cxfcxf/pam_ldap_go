@@ -31,6 +31,7 @@ false will make it not check the remote cert
 
 ```bash
 auth        sufficient    pam_ldap_go.so  config=/etc/pam_ldap.yaml <-default location
+account     required      pam_ldap_go.so  skipValidate <- this will force account validation to pass
 ```
 
 ## how to compile
