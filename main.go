@@ -129,7 +129,7 @@ func (pl *pamLdap) Authenticate(hdl pam.Handle, args pam.Args) pam.Value {
 		return pam.AuthTokenError
 	}
 
-	// if there is no socache, retrive from conv
+	// if there is no socache for authtoken, retrive from conv
 	if len(authtoken) == 0 {
 		m := pam.Message{
 			Style: pam.MessageEchoOff,
