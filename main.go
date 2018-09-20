@@ -123,9 +123,23 @@ func (pl *pamLdap) Authenticate(hdl pam.Handle, args pam.Args) pam.Value {
 	if err != nil {
 		return pam.UserUnknown
 	}
+
 	authtoken, err := hdl.GetItem(pam.AuthToken)
 	if err != nil {
 		return pam.AuthTokenError
+	}
+
+	if len(authtoken) == 0 {
+		m := pam.Message{
+			Style: pam.MessageEchoOff,
+			Msg:   "",
+		}
+
+		response, err := hdl.Conversation(m)
+		if err != nil {
+			return pam.AuthError
+		}
+		authtoken = response[0]
 	}
 
 	err = ldapAuth(pl, authuser, authtoken)
