@@ -68,7 +68,7 @@ func ldapAuth(pl *pamLdap, authuser, authtoken string) error {
 			return err
 		}
 
-		filter := fmt.Sprintf("(&(objectClass=%s)(%s=%s))", pl.ObjectClass, pl.LoginAttr, authuser)
+		filter := fmt.Sprintf("(%s(%s=%s))", pl.ObjectClass, pl.LoginAttr, authuser)
 
 		searchRequest := ldap.NewSearchRequest(
 			pl.SearchBase,

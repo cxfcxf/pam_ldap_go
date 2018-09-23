@@ -1,6 +1,6 @@
 Insecure: false
 LoginAttr: cn
-ObjectClass: top
+ObjectClass: "&(ObjectClass=top)"
 Remote: ldap.us.onelogin.com
 Port: 636
 SearchBase: ou=users,dc=yourcompany,dc=onelogin,dc=com
